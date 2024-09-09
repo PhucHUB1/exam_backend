@@ -11,28 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 public class Place {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private int id;
     private String name;
-    private String description;
-    private String image;
-
-    private double averageRating = 0.0;
-
-
-    @OneToMany(mappedBy = "place", cascade = CascadeType.ALL)
-    private List<Rating> ratings;
-
-
-
-    public void calculateAverageRating() {
-        if (ratings != null && !ratings.isEmpty()) {
-            this.averageRating = ratings.stream()
-                    .mapToDouble(Rating::getRating)
-                    .average().orElse(0.0);
-        }
-    }
+    private String imageUrl;
 }

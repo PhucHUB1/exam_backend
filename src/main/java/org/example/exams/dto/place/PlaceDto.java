@@ -1,4 +1,4 @@
-package org.example.exams.dto.book;
+package org.example.exams.dto.place;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,12 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 public class PlaceDto {
-    private Long id;
     private String name;
-    private String description;
-    private String image;
-    private double averageRating;
-    private List<RatingDto> ratings;
+    private String imageUrl;
 
 }
 

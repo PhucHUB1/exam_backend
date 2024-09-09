@@ -1,4 +1,4 @@
-package org.example.exams.dto.book;
+package org.example.exams.dto.place;
 
 import lombok.Getter;
 import lombok.Setter;

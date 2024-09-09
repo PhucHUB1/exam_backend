@@ -1,9 +1,11 @@
 package org.example.exams.services.serviceImplement;
 
 
+import org.example.exams.dto.book.PlaceDto;
 import org.example.exams.entity.Place;
 import org.example.exams.entity.Rating;
 import org.example.exams.entity.User;
+import org.example.exams.mapper.PlaceMapper;
 import org.example.exams.repository.PlaceRepository;
 import org.example.exams.repository.RatingRepository;
 import org.example.exams.repository.UserRepository;
@@ -26,6 +28,7 @@ public class PlaceServiceImpl implements PlaceService {
     @Autowired
     private UserRepository userRepository;
 
+    private final PlaceMapper placeMapper = PlaceMapper.INSTANCE;
 
 
     @Override
@@ -33,10 +36,11 @@ public class PlaceServiceImpl implements PlaceService {
         return placeRepository.findAll();
     }
 
-
     @Override
-    public Optional<Place> getPlaceById(Long placeId) {
-        return placeRepository.findById(placeId);
+    public PlaceDto getPlaceById(Long id) {
+        Place place = placeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Place not found"));
+        return placeMapper.placeToPlaceDto(place);
     }
 
     // Add a new place (Admin only)
@@ -63,31 +67,31 @@ public class PlaceServiceImpl implements PlaceService {
 
     // Allow a user to rate a place
     @Override
-    public Place ratePlace(Long placeId, int userId, int ratingValue) {
-        if (ratingValue < 1 || ratingValue > 5) {
-            throw new IllegalArgumentException("Rating should be between 1 and 5");
-        }
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
+    public PlaceDto ratePlace(Long placeId, int userId, int ratingValue) {
+        // Find the place by ID
         Place place = placeRepository.findById(placeId)
                 .orElseThrow(() -> new IllegalArgumentException("Place not found"));
+
+        // Find the user by ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // Check if the user has already rated the place
         Rating rating = ratingRepository.findByUserIdAndPlaceId(userId, placeId);
         if (rating == null) {
+            // Create a new rating if it does not exist
             rating = new Rating();
             rating.setUser(user);
             rating.setPlace(place);
         }
 
-        // Update the rating
+
         rating.setRating(ratingValue);
         ratingRepository.save(rating);
 
-        // Recalculate the average rating of the place
         place.calculateAverageRating();
-        return placeRepository.save(place);
+        placeRepository.save(place);
+
+        return placeMapper.placeToPlaceDto(place);
     }
 }

@@ -2,7 +2,7 @@ services:
   mysql:
     image: 'mysql:latest'
     environment:
-      - 'MYSQL_DATABASE=bookDb'
-      - 'MYSQL_ROOT_PASSWORD=pizza'
+      - 'MYSQL_DATABASE=travel'
+      - 'MYSQL_ROOT_PASSWORD=123456'
     ports:
       - '3306:3306'

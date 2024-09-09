@@ -8,5 +8,7 @@ import lombok.Setter;
 public class UpdatePlaceDto {
     private String name;
     private String description;
+    private String image;
+
 
 }
